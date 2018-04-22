@@ -205,6 +205,7 @@ include doc/Makefile.am
 include contrib/Makefile.am
 include scl/Makefile.am
 include packaging/debian/Makefile.am
+include packaging/rhel/Makefile.am
 include dbld/Makefile.am
 
 TEST_EXTENSIONS = .sh
