@@ -6,4 +6,6 @@ EXTRA_DIST += \
 	dbld/generate-rpm-specfile \
 	dbld/generate-debian-directory \
 	dbld/shell \
-	dbld/rules
+	dbld/rules \
+	dbld/bootstrap \
+	dbld/make
