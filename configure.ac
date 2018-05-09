@@ -1866,7 +1866,6 @@ AX_VALGRIND_CHECK
 
 AC_OUTPUT(dist.conf
           Makefile
-	  syslog-ng.spec
 	  syslog-ng.pc
           libtest/syslog-ng-test.pc
 	  scripts/update-patterndb
