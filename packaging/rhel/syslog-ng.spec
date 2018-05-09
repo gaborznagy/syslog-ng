@@ -9,9 +9,9 @@ Group: System Environment/Daemons
 License: GPLv2+
 URL: http://www.balabit.com/network-security/syslog-ng
 Source0: https://github.com/balabit/syslog-ng/releases/download/syslog-ng-%{version}/%{name}-%{version}.tar.gz
-Source1: syslog-ng.conf
-Source2: syslog-ng.logrotate
-Source3: syslog-ng.service
+Source1: %{_sourcedir}/packaging/rhel/syslog-ng.conf
+Source2: %{_sourcedir}/packaging/rhel/syslog-ng.logrotate
+Source3: %{_sourcedir}/packaging/rhel/syslog-ng.service
 
 BuildRequires: systemd-units
 BuildRequires: pkgconfig
