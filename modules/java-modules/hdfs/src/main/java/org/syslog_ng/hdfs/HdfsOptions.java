@@ -46,6 +46,7 @@ public class HdfsOptions {
 
     private LogDestination owner;
     private Options options;
+    private boolean archiveEnabled = true;
 
     public HdfsOptions(LogDestination owner) {
         this.owner = owner;
@@ -71,7 +72,13 @@ public class HdfsOptions {
     }
 
     public String getArchiveDir() {
-        return options.get(ARCHIVE_DIR).getValue();
+        if (archiveEnabled)
+            return options.get(ARCHIVE_DIR).getValue();
+        return null;
+      }
+
+    public void disableArchive() {
+        archiveEnabled = false;
     }
 
     public String[] getResouces() {

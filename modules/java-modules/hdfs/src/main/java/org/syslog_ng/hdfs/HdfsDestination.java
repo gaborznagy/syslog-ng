@@ -74,6 +74,10 @@ public class HdfsDestination extends StructuredLogDestination {
             logger.error(e.getMessage());
             return false;
         }
+        if(options.getAppendEnabled() && options.getArchiveDir() != null) {
+            logger.warn(String.format("----Archiving is disabled when append-enabled is configured."));
+            options.disableArchive();
+        }
         return true;
     }
 
