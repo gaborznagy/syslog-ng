@@ -6,6 +6,7 @@ EXTRA_DIST += \
 	\
 	contrib/README.syslog-ng-debun \
 	contrib/syslog-ng-debun \
+	contrib/syslog-ng-gdb.py \
 	\
 	contrib/init.d.solaris \
 	contrib/init.d.HP-UX \
