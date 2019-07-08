@@ -153,11 +153,13 @@ class SyslogNgDumpQueue(gdb.Function):
 
 def main():
     gdb.execute("set print pretty on")
-    gdb.set_convenience_variable("syslogngvar_mainloop", syslogng_mainloop())
-    gdb.set_convenience_variable("syslogngvar_globalconfig", syslogng_cfg())
-    gdb.set_convenience_variable("syslogngvar_config", syslogng_cfg()["original_config"]["str"])
-    gdb.set_convenience_variable("syslogngvar_preprocessedconfig", syslogng_cfg()["preprocess_config"]["str"])
-    gdb.set_convenience_variable("syslogngvar_paths", gdb.lookup_global_symbol("resolvedConfigurablePaths").value())
+
+    # TODO: gdb < 8 compat
+    #gdb.set_convenience_variable("syslogngvar_mainloop", syslogng_mainloop())
+    #gdb.set_convenience_variable("syslogngvar_globalconfig", syslogng_cfg())
+    #gdb.set_convenience_variable("syslogngvar_config", syslogng_cfg()["original_config"]["str"])
+    #gdb.set_convenience_variable("syslogngvar_preprocessedconfig", syslogng_cfg()["preprocess_config"]["str"])
+    #gdb.set_convenience_variable("syslogngvar_paths", gdb.lookup_global_symbol("resolvedConfigurablePaths").value())
 
     SyslogNg()
     SyslogNgInfo()
