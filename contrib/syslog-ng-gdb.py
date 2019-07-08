@@ -101,14 +101,23 @@ class SyslogNgListPipes(gdb.Command):
 
         gdb.write("\n")
         for i in range(0, pipe_array_len):
-            logpipe = pipe_array[i].cast(logpipe_type).dereference()
+            logpipe = pipe_array[i].cast(logpipe_type)
+            if not logpipe:
+                continue
+
+            logpipe = logpipe.dereference()
             plugin_name = logpipe["plugin_name"].string() if logpipe["plugin_name"] else None
 
             if plugin_name:
                 logdriver = logpipe.cast(logdriver_type)
                 expr_node = logpipe["expr_node"]
-                asd = "{}:{}:{}".format(expr_node["filename"].string(), expr_node["line"], expr_node["column"])
-                gdb.write("[{}]\t {}:{} ({})\n".format(i, logdriver["id"].string(), plugin_name, asd))
+                if expr_node and expr_node["filename"]:
+                    location = "{}:{}:{}".format(expr_node["filename"].string(), expr_node["line"], expr_node["column"])
+                else:
+                    location = "[unknown location]"
+
+                id = logdriver["id"].string() if logdriver["id"] else "[no ID]"
+                gdb.write("[{}]\t {}:{} ({})\n".format(i, id, plugin_name, location))
 
         gdb.write("\n")
 
