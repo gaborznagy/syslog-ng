@@ -1418,6 +1418,7 @@ vp_option
         | KW_REKEY '(' string
           {
             last_vp_transset = value_pairs_transform_set_new($3);
+            value_pairs_add_glob_pattern(last_value_pairs, $3, TRUE);
             free($3);
           }
           vp_rekey_options ')'                           { value_pairs_add_transforms(last_value_pairs, last_vp_transset); }
