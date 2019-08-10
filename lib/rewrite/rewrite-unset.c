@@ -35,12 +35,25 @@ struct _LogRewriteUnset
   LogRewrite super;
 };
 
+static inline const gchar *
+_check_if_value_exists(LogRewriteUnset *self, LogMessage *msg)
+{
+  // as msg_debug is a macro, its arguments are not evaluated until the real caller is not called,
+  // thus debug_flag=false does not have effect on performance with the log_msg_get.. calls
+  // fprintf(stderr, "********* I'VE BEEN CALLLEEEEEEEDDDD \n");
+
+  return (strlen(log_msg_get_value(msg, self->super.value_handle, NULL)) != 0) ? "TRUE" : "FALSE";
+}
+
 static void
 log_rewrite_unset_process(LogRewrite *s, LogMessage **pmsg, const LogPathOptions *path_options)
 {
   LogRewriteUnset *self = (LogRewriteUnset *) s;
 
   log_msg_make_writable(pmsg, path_options);
+  msg_debug("*** UNSET rule ***",
+            evt_tag_str("value", log_msg_get_value_name(self->super.value_handle, NULL)),
+            evt_tag_str("exists", _check_if_value_exists(self, *pmsg)));
   log_msg_unset_value(*pmsg, self->super.value_handle);
 }
 
