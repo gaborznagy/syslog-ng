@@ -57,10 +57,18 @@ usr/share/syslog-ng/include/scl/websense/*
 usr/share/syslog-ng/include/scl/netskope/*
 usr/share/syslog-ng/include/scl/junos/*
 usr/share/syslog-ng/include/scl/checkpoint/*
+usr/share/syslog-ng/include/scl/cim/*
+usr/share/syslog-ng/include/scl/elasticsearch/*
+usr/share/syslog-ng/include/scl/graphite/*
+usr/share/syslog-ng/include/scl/hdfs/*
+usr/share/syslog-ng/include/scl/slack/*
+usr/share/syslog-ng/include/scl/telegram/*
+usr/share/syslog-ng/include/scl/kafka/*
+usr/share/syslog-ng/include/scl/pacct/*
+usr/share/syslog-ng/include/scl/snmptrap/*
+
 usr/share/syslog-ng/xsd/*
 
-#Templates with json dependencies
-usr/share/syslog-ng/include/scl/cim/*
 [!kfreebsd-any] debian/syslog-ng.systemd =>  lib/systemd/system/syslog-ng.service
 
 debian/syslog-ng.conf                   /etc/syslog-ng/
