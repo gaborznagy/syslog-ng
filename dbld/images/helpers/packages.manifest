@@ -146,9 +146,9 @@ gcc-c++				[centos, fedora]
 
 
 # packages to run successful make check
-python-pip                      [centos, fedora, debian, ubuntu-xenial, ubuntu-bionic, ubuntu-cosmic, ubuntu-eoan ]
+python-pip                      [centos, fedora, debian, ubuntu-trusty, ubuntu-xenial, ubuntu-bionic, ubuntu-cosmic, ubuntu-eoan ]
 python3-pip                     [ubuntu-focal]
-python-setuptools               [centos, fedora, debian, ubuntu-xenial, ubuntu-bionic, ubuntu-cosmic, ubuntu-eoan]
+python-setuptools               [centos, fedora, debian, ubuntu-trusty, ubuntu-xenial, ubuntu-bionic, ubuntu-cosmic, ubuntu-eoan]
 python3-setuptools              [ubuntu-focal]
 tzdata                          [centos, fedora, debian, ubuntu]
 
