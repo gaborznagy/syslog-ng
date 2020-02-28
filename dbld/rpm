@@ -11,9 +11,6 @@ function setup_dirs() {
 }
 
 function prepare_source() {
-    # CzP's spec file expect it in the pwd
-    # where the build was initiated
-    cp /source/packaging/rhel/syslog-ng.* /build
     cp syslog-ng-${VERSION}.tar.gz $RPMBUILD_SOURCES
 }
 
