@@ -377,6 +377,9 @@ _auth_header_renew(HTTPDestinationDriver *self)
 
   if (self->auth_header && http_auth_header_has_expired(self->auth_header))
     {
+      msg_debug("Http auth header expired, starting to renew auth header",
+                evt_tag_str("driver", self->super.super.super.id),
+                log_pipe_location_tag(&self->super.super.super.super));
       ret = http_auth_header_renew(self->auth_header);
       if (ret)
         {

@@ -178,6 +178,9 @@ _append_auth_header(List *list, HTTPDestinationDriver *owner)
   const gchar *auth_header_str = http_auth_header_get_as_string(owner->auth_header);
   if (!auth_header_str)
     {
+      msg_notice("Missing auth header, requesting new auth header",
+                  evt_tag_str("driver", owner->super.super.super.id),
+                  log_pipe_location_tag(&owner->super.super.super.super));
       if (!http_dd_auth_header_renew(&owner->super.super.super))
         {
           msg_warning("WARNING: failed to renew auth header",
@@ -629,7 +632,12 @@ _flush_on_target(HTTPDestinationWorker *self, HTTPLoadBalancerTarget *target)
   EMIT(owner->super.super.super.super.signal_slot_connector, signal_http_response_received, &signal_data);
 
   if (http_code == 401 && owner->auth_header)
-    return _renew_header(owner);
+    {
+      msg_notice("Received HTTP response 401 Unauthorized, renewing auth header",
+                 evt_tag_str("driver", owner->super.super.super.id),
+                 log_pipe_location_tag(&owner->super.super.super.super));
+      return _renew_header(owner);
+    }
 
   return _map_http_status_code(self, target->url, http_code);
 }
