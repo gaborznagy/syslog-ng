@@ -31,6 +31,9 @@ news_dir = Path(__file__).resolve().parent
 root_dir = news_dir.parent
 newsfile = root_dir / 'NEWS.md'
 
+last_version = None
+next_version = None
+
 
 def print_usage_if_needed():
     ArgumentParser(usage="\rCreates NEWS.md file from the entries in the news/ folder.\n"
@@ -59,20 +62,24 @@ def create_block(block_name, files):
     return block
 
 
-def get_news_version():
+def get_last_version():
     stdout = _exec(r'git show HEAD:NEWS.md')
     return stdout[:stdout.index('\n')]
 
 
 def create_version():
-    version = (root_dir / 'VERSION').read_text().rstrip()
-    news_version = get_news_version()
-    if version == news_version:
-        print('VERSION file contains the same version as the current NEWS.md file.\n' \
-              'Probably you are trying to create the newsfile before bumping the `VERSION` file.\n' \
+    global next_version, last_version
+
+    next_version = (root_dir / 'VERSION').read_text().rstrip()
+    last_version = get_last_version()
+
+    if next_version == last_version:
+        print('VERSION file contains the same version as the current NEWS.md file.\n'
+              'Probably you are trying to create the newsfile before bumping the `VERSION` file.\n'
               'Please provide version to be released.')
-        version = input('Version to be released: ')
-    return '{}\n{}\n\n'.format(version, len(version) * '=')
+        next_version = input('Version to be released: ')
+
+    return '{}\n{}\n\n'.format(next_version, len(next_version) * '=')
 
 
 def create_highlights_block():
