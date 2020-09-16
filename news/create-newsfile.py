@@ -34,6 +34,19 @@ newsfile = root_dir / 'NEWS.md'
 last_version = None
 next_version = None
 
+team_members = [
+    "Andras Mitzki",
+    "Antal Nemes",
+    "Attila Szakacs",
+    "Balazs Scheidler",
+    "Gabor Nagy",
+    "Laszlo Budai",
+    "Laszlo Szemere",
+    "László Várady",
+    "Norbert Takacs",
+    "Zoltan Pallagi",
+]
+
 
 def print_usage_if_needed():
     ArgumentParser(usage="\rCreates NEWS.md file from the entries in the news/ folder.\n"
@@ -106,6 +119,26 @@ def create_standard_blocks():
 
 
 def create_credits_block():
+    def join_with_length_limit(contributors):
+        limit = 70
+        lines = ['']
+
+        for contributor in contributors:
+            buffer = lines[-1]
+            buffer += ' ' + contributor + ','
+            if len(buffer) > limit:
+                lines.append(contributor + ',')
+            else:
+                lines[-1] = buffer
+
+        return '\n'.join(lines)[1:-1]
+
+    stdout = _exec(r'git rev-list --no-merges --format=format:%an syslog-ng-' + last_version + r'..HEAD | '
+                   r'grep -Ev "^commit [a-z0-9]{40}$" | sort | uniq')
+    contributors = stdout.rstrip().split('\n')
+    contributors += team_members
+    contributors = sorted(list(set(contributors)))
+
     return '## Credits\n' \
            '\n' \
            'syslog-ng is developed as a community project, and as such it relies\n' \
@@ -117,7 +150,7 @@ def create_credits_block():
            '\n' \
            'We would like to thank the following people for their contribution:\n' \
            '\n' \
-           '<Fill this by the internal news file creating tool>\n'
+           '{}\n'.format(join_with_length_limit(contributors))
 
 
 def create_newsfile(news):
