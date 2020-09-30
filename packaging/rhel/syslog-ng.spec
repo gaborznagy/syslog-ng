@@ -9,12 +9,12 @@
 %{echo:%{with_python3}}
 
 
-%if 0%{with python3}
+%if 0%{?with_python3}
 %{echo:"dibug: Someone said python3 ?!?!?!?!"}
 %global with_python2 0
 %endif
 
-%if 0%{with python2}
+%if 0%{?with_python2}
 %{echo:"dibug: Chill, we have python2!!!"}
 %undefine _with_python3
 %global with_python3 0
@@ -34,13 +34,13 @@
   %bcond_without kafka
   %bcond_without afsnmp
 
-  %if 0%{with python2}
+  %if 0%{?with_python2}
     %{echo:"dibug: rhel-7: python2 !!!!\n\n"}
     %global		python_devel python-devel
     %global         py_ver  %{python_version}
   %endif
 
-  %if 0%{with python3}
+  %if 0%{?with_python3}
 
     %if 0%{?rhel} == 7
       %{echo: "dibug: rhel-7: python3 :((((((\n\n"}
