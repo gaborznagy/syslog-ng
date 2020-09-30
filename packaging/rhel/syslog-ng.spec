@@ -1,6 +1,6 @@
 
-%bcond_with python3
-%bcond_without python2
+#%bcond_with python3
+#%bcond_without python2
 
 %{echo: "dibug: v552 start python3:%{with_python3} "}
 %{echo: dibug python2?}
