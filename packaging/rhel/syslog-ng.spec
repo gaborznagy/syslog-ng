@@ -2,61 +2,81 @@
 %bcond_with python3
 %bcond_without python2
 
+%{echo: "dibug: v552 start python3:%{with_python3} "}
+%{echo: dibug python2?}
+%{echo:%{with_python2}}
+%{echo: dibug python3?}
+%{echo:%{with_python3}}
+
+
 %if 0%{with python3}
+%{echo:"dibug: Someone said python3 ?!?!?!?!"}
 %global with_python2 0
 %endif
 
 %if 0%{with python2}
+%{echo:"dibug: Chill, we have python2!!!"}
+%undefine _with_python3
 %global with_python3 0
+%global _with_python3 0
 %endif
 
 %if 0%{?rhel} >= 7 || 0%{?fedora} >= 28
-%bcond_without sql
-%bcond_without mongodb
-%bcond_without systemd
-%bcond_without redis
-%bcond_without riemann
-%bcond_without maxminddb
-%bcond_without amqp
-%bcond_without java
-%bcond_without kafka
-%bcond_without afsnmp
+  %bcond_without sql
+  %{echo:"dibug: this is rhel-7\n\n"}
+  %bcond_without mongodb
+  %bcond_without systemd
+  %bcond_without redis
+  %bcond_without riemann
+  %bcond_without maxminddb
+  %bcond_without amqp
+  %bcond_without java
+  %bcond_without kafka
+  %bcond_without afsnmp
 
-%if 0%{with python2}
-%global		python_devel python-devel
-%global         py_ver  %{python_version}
-%endif
+  %if 0%{with python2}
+    %{echo:"dibug: rhel-7: python2 !!!!\n\n"}
+    %global		python_devel python-devel
+    %global         py_ver  %{python_version}
+  %endif
 
-%if 0%{with python3}
+  %if 0%{with python3}
 
-%if 0%{?rhel} == 7
-%global		python_devel python36-devel
-%global         py_ver  3.6
+    %if 0%{?rhel} == 7
+      %{echo: "dibug: rhel-7: python3 :((((((\n\n"}
+      %global		python_devel python36-devel
+      %global         py_ver  3.6
+    %else
+      %global		python_devel python3-devel
+      %global         py_ver  %{python3_version}
+    %endif
+
+  %endif
+
+%{echo: "dibug: stop --------------------- "}
+%{echo: dibug python2?}
+%{echo:%{with_python2}}
+%{echo: dibug python3?}
+%{echo:%{with_python3}}
+
 %else
-%global		python_devel python3-devel
-%global         py_ver  %{python3_version}
-%endif
 
-%endif
-
-%else
-
-%if 0%{rhel} == 6
-%bcond_with sql
-%bcond_with mongodb
-%bcond_with systemd
-%bcond_with redis
-%bcond_with riemann
-%bcond_with maxminddb
-%bcond_with amqp
-%bcond_without java
-%bcond_with kafka
-%bcond_without afsnmp
-%global        python_devel python-devel
-%global        py_ver  2.6
-%else
-%{error:Unsupported distro, we currently only try to build on RHEL >= 7 or Fedora >= 30}
-%endif
+  %if 0%{rhel} == 6
+    %bcond_with sql
+    %bcond_with mongodb
+    %bcond_with systemd
+    %bcond_with redis
+    %bcond_with riemann
+    %bcond_with maxminddb
+    %bcond_with amqp
+    %bcond_without java
+    %bcond_with kafka
+    %bcond_without afsnmp
+    %global        python_devel python-devel
+    %global        py_ver  2.6
+  %else
+    %{error:Unsupported distro, we currently only try to build on RHEL >= 7 or Fedora >= 30}
+  %endif
 
 %endif
 %global ivykis_ver 0.36.1
