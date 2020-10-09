@@ -62,7 +62,7 @@
 %global ivykis_ver 0.36.1
 
 Name: syslog-ng
-Version: 3.28.1
+Version: 3.99.1
 Release: 1%{?dist}
 Summary: Next-generation syslog server
 
@@ -637,6 +637,9 @@ fi
 
 
 %changelog
+* Fri Oct  9 2020 github-actions <github-actions@github.com> - 3.99.1-1
+- updated to 3.99.1
+
 * Fri Aug 28 2020 Laszlo Budai <laszlo.budai@outlook.com> - 3.29.1-1
 - updated to 3.29.1
 

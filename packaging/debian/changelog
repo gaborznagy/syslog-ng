@@ -1,3 +1,9 @@
+syslog-ng (3.99.1-1) unstable; urgency=medium
+
+  * New upstream release 3.99.1
+
+ -- Laszlo Varady <runner@fv-az76.5kqjzlfjm3wuvoxhlr3e35ykoh.cx.internal.cloudapp.net>  Fri, 09 Oct 2020 10:29:18 +0000
+
 syslog-ng (3.29.1-1) unstable; urgency=medium
 
   * New upstream release 3.29.1
