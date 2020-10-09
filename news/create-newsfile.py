@@ -31,10 +31,33 @@ news_dir = Path(__file__).resolve().parent
 root_dir = news_dir.parent
 newsfile = root_dir / 'NEWS.md'
 
+last_version = None
+next_version = None
+
+team_members = [
+    "Andras Mitzki",
+    "Antal Nemes",
+    "Attila Szakacs",
+    "Balazs Scheidler",
+    "Gabor Nagy",
+    "Laszlo Budai",
+    "Laszlo Szemere",
+    "László Várady",
+    "Norbert Takacs",
+    "Zoltan Pallagi",
+]
+
 
 def print_usage_if_needed():
     ArgumentParser(usage="\rCreates NEWS.md file from the entries in the news/ folder.\n"
                          "It also deletes the entry files.").parse_args()
+
+
+def _exec(command):
+    proc = Popen(command, cwd=str(root_dir), stdout=PIPE, shell=True)
+    stdout, _ = proc.communicate()
+    stdout = stdout.decode()
+    return stdout
 
 
 def create_block(block_name, files):
@@ -52,22 +75,24 @@ def create_block(block_name, files):
     return block
 
 
-def get_news_version():
-    proc = Popen(r'git show HEAD:NEWS.md'.split(), cwd=str(root_dir), stdout=PIPE)
-    stdout, _ = proc.communicate()
-    stdout = stdout.decode()
+def get_last_version():
+    stdout = _exec(r'git show HEAD:NEWS.md')
     return stdout[:stdout.index('\n')]
 
 
 def create_version():
-    version = (root_dir / 'VERSION').read_text().rstrip()
-    news_version = get_news_version()
-    if version == news_version:
-        print('VERSION file contains the same version as the current NEWS.md file.\n' \
-              'Probably you are trying to create the newsfile before bumping the `VERSION` file.\n' \
+    global next_version, last_version
+
+    next_version = (root_dir / 'VERSION').read_text().rstrip()
+    last_version = get_last_version()
+
+    if next_version == last_version:
+        print('VERSION file contains the same version as the current NEWS.md file.\n'
+              'Probably you are trying to create the newsfile before bumping the `VERSION` file.\n'
               'Please provide version to be released.')
-        version = input('Version to be released: ')
-    return '{}\n{}\n\n'.format(version, len(version) * '=')
+        next_version = input('Version to be released: ')
+
+    return '{}\n{}\n\n'.format(next_version, len(next_version) * '=')
 
 
 def create_highlights_block():
@@ -94,6 +119,26 @@ def create_standard_blocks():
 
 
 def create_credits_block():
+    def join_with_length_limit(contributors):
+        limit = 70
+        lines = ['']
+
+        for contributor in contributors:
+            buffer = lines[-1]
+            buffer += ' ' + contributor + ','
+            if len(buffer) > limit:
+                lines.append(contributor + ',')
+            else:
+                lines[-1] = buffer
+
+        return '\n'.join(lines)[1:-1]
+
+    stdout = _exec(r'git rev-list --no-merges --format=format:%an syslog-ng-' + last_version + r'..HEAD | '
+                   r'grep -Ev "^commit [a-z0-9]{40}$" | sort | uniq')
+    contributors = stdout.rstrip().split('\n')
+    contributors += team_members
+    contributors = sorted(list(set(contributors)))
+
     return '## Credits\n' \
            '\n' \
            'syslog-ng is developed as a community project, and as such it relies\n' \
@@ -105,7 +150,7 @@ def create_credits_block():
            '\n' \
            'We would like to thank the following people for their contribution:\n' \
            '\n' \
-           '<Fill this by the internal news file creating tool>\n'
+           '{}\n'.format(join_with_length_limit(contributors))
 
 
 def create_newsfile(news):
@@ -115,7 +160,7 @@ def create_newsfile(news):
 
 def cleanup():
     print("Cleaning up entry files with `git rm news/*-*.md`:")
-    Popen("git rm news/*-*.md".split(), cwd=str(root_dir))
+    _exec("git rm news/*-*.md")
 
 
 def create_news_content():
