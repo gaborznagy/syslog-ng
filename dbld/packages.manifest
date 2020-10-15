@@ -47,7 +47,7 @@ doxygen                         [ubuntu, debian-testing]
 
 # docbook to generate man pages
 docbook-xsl                     [ubuntu, debian-testing]
-docbook-style-xsl               [fedora, debian-testing]
+docbook-style-xsl               [fedora]
 
 #############################################################################
 # Build environment dependencies that are not strictly required by syslog-ng
