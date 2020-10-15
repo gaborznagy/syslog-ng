@@ -43,11 +43,11 @@ rpm-build                       [centos, fedora]
 # Tarball related tools
 #############################################################################
 # needed to create a tarball from libjson-c
-doxygen                         [ubuntu]
+doxygen                         [ubuntu, debian-testing]
 
 # docbook to generate man pages
-docbook-xsl                     [ubuntu]
-docbook-style-xsl               [fedora]
+docbook-xsl                     [ubuntu, debian-testing]
+docbook-style-xsl               [fedora, debian-testing]
 
 #############################################################################
 # Build environment dependencies that are not strictly required by syslog-ng
@@ -89,7 +89,7 @@ python-dev                  [debian-stretch, debian-buster, ubuntu-xenial, ubunt
 python2-dev                 [debian-sid]
 python-devel                [centos, fedora]
 python3-devel               [fedora]
-python3-dev                 [ubuntu-focal]
+python3-dev                 [ubuntu-focal, debian-testing]
 python-pip                      [centos, fedora, debian-stretch, debian-buster, ubuntu-trusty, ubuntu-xenial, ubuntu-bionic]
 python3-pip                     [debian, ubuntu]
 
