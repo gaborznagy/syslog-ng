@@ -32,6 +32,7 @@
 #include "timeutils/misc.h"
 
 #include <criterion/criterion.h>
+#include <criterion/parameterized.h>
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -231,3 +232,115 @@ Test(logwriter, test_logwriter)
   iv_deinit();
   cfg_free(configuration);
 }
+
+#ifdef VALAMI
+typedef struct
+{
+  gsize truncate_size;
+  const gchar *input_message;
+} LogWriterTruncateTests;
+
+ParameterizedTestParameters(logwriter, test_truncate)
+{
+  static LogWriterTruncateTests test_params[] =
+  {
+    // truncate is not expected
+    { 0, "<13>1 2020-12-08T14:50:10.729017+01:00 localhost logger - - [timeQuality tzKnown=\"1\" isSynced=\"1\" syncAccuracy=\"967000\"] event logged" },
+    { 30, "<155>Dec  8 16:09:10 bzorp syslog-ng árvíztűrőtükörfúrógép" }, // 30
+    { 65507, "<155>2006-02-11T10:34:56+01:00 bzorp syslog-ng[23323]:árvíztűrőtükörfúrógép" },
+    // truncating tests
+    { 20, "<155>2006-02-11T10:34:56+01:00 bzorp syslog-ng[23323]:árvíztűrőtükörfúrógép" },
+    { 100, "Dec  8 13:50:20 localhost kernel: [44255.432861] audit: type=1400 audit(1607431820.444:76): apparmor=\"ALLOWED\" operation=\"open\" profile=\"libreoffice-soffice\" name=\"/usr/share/zoneinfo-icu/44/le/zoneinfo64.res\" pid=367291 comm=\"soffice.bin\" requested_mask=\"r\" denied_mask=\"r\" fsuid=1000 ouid=0" },
+  };
+  return cr_make_param_array(LogWriterTruncateTests, test_params, sizeof(test_params)/sizeof(test_params[0]));
+}
+
+static void
+_setup_truncate_test_env(void)
+{
+  setenv("TZ", "MET-1METDST", TRUE);
+  app_startup();
+}
+
+static void
+_teardown_truncate_test_env(void)
+{
+  app_shutdown();
+}
+
+static gsize
+_get_logmsg_value_length(LogMessage *msg, const gchar *name)
+{
+  gssize length;
+  const gchar *logmsg_macro = log_msg_get_value_by_name(msg, name, &length);
+  cr_log_info("log_msg_get_value_by_name %s; value:%s, length:%ld", name, logmsg_macro, length);
+  return (gsize)length;
+}
+
+static gsize
+_calculate_expected_length(LogWriterTruncateTests *test_params, LogMessage *msg)
+{
+  gsize expected_length = 0;
+  // When no LW_FORMAT_ or LW_SYSLOG_PROTOCOL is set!!!
+  expected_length += _get_logmsg_value_length(msg, "HOST");
+  expected_length += strlen(" ");
+  expected_length += _get_logmsg_value_length(msg, "MSGHDR");
+  expected_length += _get_logmsg_value_length(msg, "MSG");
+  expected_length += strlen(" ");
+  expected_length += strlen("\n");
+
+  if (test_params->truncate_size && expected_length > test_params->truncate_size)
+    expected_length = test_params->truncate_size;
+
+  cr_log_info("***** Calculate expected length; truncate_size:%ld, result:%ld",
+              test_params->truncate_size, expected_length);
+  return expected_length;
+}
+
+ParameterizedTest(LogWriterTruncateTests *test_params, logwriter, test_truncate)
+{
+  // setup
+  GlobalConfig *cfg = cfg_new_snippet();
+  _setup_truncate_test_env();
+  cfg_load_module(cfg, "syslogformat");
+
+  MsgFormatOptions *format_options = g_new0(MsgFormatOptions, 1);
+  msg_format_options_defaults(format_options);
+  msg_format_options_init(format_options, cfg);
+
+  // create message
+  LogMessage *msg = log_msg_new(test_params->input_message, strlen(test_params->input_message), format_options);
+
+  // logwriter: format message
+  LogWriterOptions writer_options;
+  log_writer_options_defaults(&writer_options);
+  writer_options.stats_source = stats_register_type("test_logwriter");
+  log_writer_options_init(&writer_options, cfg, 0);
+  if (test_params->truncate_size > 0)
+    writer_options.truncate_size = test_params->truncate_size;
+  LogQueue *queue = log_queue_fifo_new(1000, NULL);
+  LogWriter *writer = log_writer_new(0, cfg);
+  log_writer_set_options(writer, NULL, &writer_options, "test", "logwriter");
+  log_writer_set_queue(writer, queue);
+  cr_assert(log_pipe_init((LogPipe *)writer), "LogWriter initialization failed");
+  GString *result = g_string_sized_new(127);
+  log_writer_format_log(writer, msg, result);
+
+  // assert on message length
+  gsize expected_length = _calculate_expected_length(test_params, msg);
+  cr_log_info("length:%ld(expected:%ld), result:'%s'", result->len, expected_length, result->str);
+  cr_assert_eq(result->len, expected_length, "Message size differs expected; length:%ld(expected:%ld), result:%s",
+               result->len, expected_length, result->str);
+
+  // teardown
+  cr_expect(log_pipe_deinit((LogPipe *)writer));
+  log_pipe_unref((LogPipe *) writer);
+  log_writer_options_destroy(&writer_options);
+  log_queue_unref(queue);
+  log_msg_unref(msg);
+  g_string_free(result, TRUE);
+  g_free(format_options);
+  g_free(cfg);
+  _teardown_truncate_test_env();
+}
+#endif
