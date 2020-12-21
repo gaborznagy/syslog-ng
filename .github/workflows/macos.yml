@@ -16,6 +16,8 @@ jobs:
       - name: Install dependencies
         run: |
           brew update --preinstall
+          brew unlink python@3.9
+          brew link --overwrite python@3.9
           brew bundle --file=contrib/Brewfile
           pip install --user -r requirements.txt
 
