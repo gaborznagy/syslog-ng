@@ -11,11 +11,10 @@ BUILDER_IMAGES=		\
 	ubuntu-xenial	\
 	ubuntu-bionic	\
 	ubuntu-focal	\
-	ubuntu-impish \
-	kira		\
-	tarball
+	ubuntu-impish
 
 IMAGES=${BUILDER_IMAGES} devshell
+IMAGES=${BUILDER_IMAGES} devshell kira tarball
 DEFAULT_IMAGE ?= devshell
 TARBALL_IMAGE ?= tarball
 DEFAULT_DEB_IMAGE=ubuntu-focal
