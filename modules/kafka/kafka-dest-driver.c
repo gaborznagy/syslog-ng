@@ -278,9 +278,9 @@ _kafka_delivery_report_cb(rd_kafka_t *rk,
   /* we already ACKed back this message to syslog-ng, it was kept in
    * librdkafka queues so far but successfully delivered, let's unref it */
 
+  LogThreadedDestWorker *worker = (LogThreadedDestWorker *) self->super.workers[0];
   if (err != RD_KAFKA_RESP_ERR_NO_ERROR)
     {
-      LogThreadedDestWorker *worker = (LogThreadedDestWorker *) self->super.workers[0];
       LogQueue *queue = worker->queue;
       LogPathOptions path_options = LOG_PATH_OPTIONS_INIT_NOACK;
 
@@ -302,6 +302,7 @@ _kafka_delivery_report_cb(rd_kafka_t *rk,
                 evt_tag_str("error", rd_kafka_err2str(err)),
                 evt_tag_str("driver", self->super.super.super.id),
                 log_pipe_location_tag(&self->super.super.super.super));
+      log_threaded_dest_worker_ack_messages(worker, worker->batch_size);
       log_msg_unref(msg);
     }
   log_threaded_dest_worker_wakeup_when_suspended((LogThreadedDestWorker *) self->super.workers[0]);

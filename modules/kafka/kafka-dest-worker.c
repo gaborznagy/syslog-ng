@@ -195,7 +195,7 @@ kafka_dest_worker_insert(LogThreadedDestWorker *s, LogMessage *msg)
     return LTR_RETRY;
 
   _drain_responses(self);
-  return LTR_SUCCESS;
+  return LTR_EXPLICIT_ACK_MGMT;
 }
 
 static void
