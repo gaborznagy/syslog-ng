@@ -377,18 +377,7 @@ _perform_flush(LogThreadedDestWorker *self)
    * flush() being called always, even if LTR_SUCCESS is
    * returned, in which case batch_size is already zero at this point.
    */
-  if (!self->suspended)
-    {
-      msg_trace("Flushing batch",
-                evt_tag_str("driver", self->owner->super.super.id),
-                evt_tag_int("worker_index", self->worker_index),
-                evt_tag_int("batch_size", self->batch_size));
-
-      LogThreadedResult result = log_threaded_dest_worker_flush(self, LTF_FLUSH_NORMAL);
-      _process_result(self, result);
-    }
-
-  iv_invalidate_now();
+  return;
 }
 
 /* NOTE: runs in the worker thread, whenever items on our queue are
