@@ -303,7 +303,6 @@ _kafka_delivery_report_cb(rd_kafka_t *rk,
                 evt_tag_str("driver", self->super.super.super.id),
                 log_pipe_location_tag(&self->super.super.super.super));
       log_threaded_dest_worker_ack_messages(&worker->super, worker->super.batch_size);
-      log_msg_unref(msg);
     }
   log_threaded_dest_worker_wakeup_when_suspended(&worker->super);
   g_free(msg_opaque);
