@@ -273,15 +273,15 @@ _kafka_delivery_report_cb(rd_kafka_t *rk,
                           void *opaque, void *msg_opaque)
 {
   KafkaDestDriver *self = (KafkaDestDriver *) opaque;
-  LogMessage *msg = (LogMessage *) msg_opaque;
+  KafkaDestWorker *worker = ((KafkaOpaque *) msg_opaque)->worker;
+  LogMessage *msg = ((KafkaOpaque *) msg_opaque)->msg;
 
   /* we already ACKed back this message to syslog-ng, it was kept in
    * librdkafka queues so far but successfully delivered, let's unref it */
 
-  LogThreadedDestWorker *worker = (LogThreadedDestWorker *) self->super.workers[0];
   if (err != RD_KAFKA_RESP_ERR_NO_ERROR)
     {
-      LogQueue *queue = worker->queue;
+      LogQueue *queue = worker->super.queue;
       LogPathOptions path_options = LOG_PATH_OPTIONS_INIT_NOACK;
 
       msg_debug("kafka: delivery report for message came back with an error, putting it back to our queue",
@@ -302,10 +302,11 @@ _kafka_delivery_report_cb(rd_kafka_t *rk,
                 evt_tag_str("error", rd_kafka_err2str(err)),
                 evt_tag_str("driver", self->super.super.super.id),
                 log_pipe_location_tag(&self->super.super.super.super));
-      log_threaded_dest_worker_ack_messages(worker, worker->batch_size);
+      log_threaded_dest_worker_ack_messages(&worker->super, worker->super.batch_size);
       log_msg_unref(msg);
     }
-  log_threaded_dest_worker_wakeup_when_suspended((LogThreadedDestWorker *) self->super.workers[0]);
+  log_threaded_dest_worker_wakeup_when_suspended(&worker->super);
+  g_free(msg_opaque);
 }
 
 static void

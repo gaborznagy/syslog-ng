@@ -109,12 +109,15 @@ _publish_message(KafkaDestWorker *self, LogMessage *msg)
   int block_flag = _is_poller_thread(self) ? 0 : RD_KAFKA_MSG_F_BLOCK;
   rd_kafka_topic_t *topic = kafka_dest_worker_calculate_topic(self, msg);
 
+  KafkaOpaque *msg_opaque = g_new0(KafkaOpaque, 1);
+  msg_opaque->worker = self;
+  msg_opaque->msg = log_msg_ref(msg);
   if (rd_kafka_produce(topic,
                        RD_KAFKA_PARTITION_UA,
                        RD_KAFKA_MSG_F_FREE | block_flag,
                        self->message->str, self->message->len,
                        self->key->len ? self->key->str : NULL, self->key->len,
-                       log_msg_ref(msg)) == -1)
+                       msg_opaque) == -1)
     {
       msg_error("kafka: failed to publish message",
                 evt_tag_str("topic", rd_kafka_topic_name(topic)),

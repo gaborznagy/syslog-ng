@@ -26,6 +26,7 @@
 #define KAFKA_DEST_WORKER_H_INCLUDED
 
 #include "logthrdest/logthrdestdrv.h"
+#include "logmsg/logmsg.h"
 
 typedef struct _KafkaDestWorker
 {
@@ -35,6 +36,11 @@ typedef struct _KafkaDestWorker
   GString *message;
   GString *topic_name_buffer;
 } KafkaDestWorker;
+
+typedef struct {
+  KafkaDestWorker *worker;
+  LogMessage *msg;
+} KafkaOpaque;
 
 LogThreadedDestWorker *kafka_dest_worker_new(LogThreadedDestDriver *owner, gint worker_index);
 
