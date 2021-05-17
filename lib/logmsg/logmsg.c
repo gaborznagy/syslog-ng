@@ -1788,6 +1788,7 @@ log_msg_refcache_stop(void)
 
   if ((LOGMSG_REFCACHE_VALUE_TO_ACK(old_value) == -current_cached_acks) && logmsg_cached_ack_needed)
     {
+      g_assert(current_cached_acks != 0);
       AckType ack_type_cumulated = _ack_and_ref_and_abort_and_suspend_to_acktype(old_value);
 
       if (current_cached_suspend)
