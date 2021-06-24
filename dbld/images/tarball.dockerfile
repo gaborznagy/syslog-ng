@@ -1,4 +1,4 @@
-FROM balabit/syslog-ng-debian-testing:latest
+FROM gaborznagy/syslog-ng-debian-testing:latest
 
 ARG OS_PLATFORM
 ARG COMMIT

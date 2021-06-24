@@ -1,4 +1,4 @@
-FROM balabit/syslog-ng-tarball:latest
+FROM gaborznagy/syslog-ng-tarball:latest
 ENV OS_PLATFORM devshell
 
 
