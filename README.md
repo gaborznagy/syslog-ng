@@ -196,3 +196,4 @@ The documentation of the latest released version of syslog-ng Open Source Editio
 ## Contributing
 
 If you would like to contribute to syslog-ng, to fix a bug or create a new module, the [syslog-ng gitbook](https://syslog-ng.gitbooks.io/getting-started/content/) helps you take the first steps to working with the code base.
+okay
