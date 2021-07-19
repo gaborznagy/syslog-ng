@@ -30,13 +30,32 @@ The source code and build products are mounted externally in the following locat
 
 ### Building syslog-ng from tarball using the 'tarball' image
 
+#### Create syslog-ng tarball
+
+Syslog-ng depends on [bison](https://gnu.org/....) version 3.7.6, which version is not available widely in distributions, yet.
+We have a dedicated docker image which we also use for releasing syslog-ng OSE.
+We recommend that for platforms where bison is too old, the `tarball` image should be used instead to produce a tarball,
+and then this tarball to be used for compiling syslog-ng on the host.
+
 ```bash
 $ dbld/rules tarball
 $ Your tarball is in /build, also available on the host in $(top_srcdir)/dbld/build
+```
+(note, that the tarball is already extracted in dbld/build. 
+TODO: check the extracted tarball-archive's state: is it the same as the archvie itself?)
+Use the newly created tarball on the host machine
+```
+$ dbld/rules shell-debian-buster
 $ cd dbld/build
 $ tar -xzvf syslog-ng*.tar.gz
 $ ./syslog-ng-*/configure
 $ make
+```
+
+You can build syslog-ng entirely in docker without a development environment on the host:
+```
+$ dbld/rules bootstrap
+$ dbld/rules make-<TODO>
 ```
 
 You can also build a DEB using:
