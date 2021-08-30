@@ -11,6 +11,7 @@ BUILDER_IMAGES=		\
 	ubuntu-bionic	\
 	ubuntu-focal	\
 	ubuntu-groovy	\
+	ubuntu-hirsute	\
 	kira		\
 	tarball
 

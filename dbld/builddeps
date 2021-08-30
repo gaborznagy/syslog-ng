@@ -157,7 +157,7 @@ function install_pip_packages {
         fedora-*)
             python_executables="python"
             ;;
-        ubuntu-groovy|ubuntu-focal|tarball)
+        ubuntu-hirsute|ubuntu-groovy|ubuntu-focal|tarball)
             python_executables="python3"
             ;;
         devshell|kira)
