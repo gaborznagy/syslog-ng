@@ -64,7 +64,7 @@ function run_build_command_with_build_manifest_parameters() {
 
 function _map_feature_flags_to_deb_build_profiles()
 {
-    echo -n DEB_BUILD_PROFILES=
+    echo -n "\"DEB_BUILD_PROFILES="
     IFS=,
     for feature in $1; do
         case "$feature" in
@@ -77,6 +77,7 @@ function _map_feature_flags_to_deb_build_profiles()
             echo -n "sng-$feature "
             ;;
         esac
+    echo -n "\""
     done
     echo
 }
