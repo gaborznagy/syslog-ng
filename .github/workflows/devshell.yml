@@ -236,10 +236,9 @@ jobs:
 
   copyright-check:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/syslog-ng/dbld-devshell:latest
-      env:
-        COPYRIGHTVERBOSITY: 1
+
+    env:
+      COPYRIGHTVERBOSITY: 1
 
     steps:
       - name: Checkout syslog-ng source
