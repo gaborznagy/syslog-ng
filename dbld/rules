@@ -98,8 +98,9 @@ bootstrap: bootstrap-$(DEFAULT_IMAGE)
 bootstrap-%: setup
 	$(DOCKER) run $(DOCKER_RUN_ARGS) --rm  -i  ${CONTAINER_REGISTRY}/dbld-$* /dbld/bootstrap
 
+make: make-$(DEFAULT_IMAGE)
 make-%: setup
-	$(DOCKER) run $(DOCKER_RUN_ARGS) --rm -i  ${CONTAINER_REGISTRY}/dbld-$(DEFAULT_IMAGE) /dbld/make $(MAKE_ARGS) $*
+	$(DOCKER) run $(DOCKER_RUN_ARGS) --rm -i  ${CONTAINER_REGISTRY}/dbld-$* /dbld/make $(MAKE_TARGET)
 
 tarball-from-root: setup
 	@if [ -f $(ROOT_DIR)/../$(TARBALL_BASENAME) ] && [ ! -f $(TARBALL) ]; then \
