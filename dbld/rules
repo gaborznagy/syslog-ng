@@ -201,7 +201,7 @@ clean:
 run: run-$(DEFAULT_IMAGE)
 run: RUN_COMMAND=echo Specify RUN_COMMAND to do something sensible here
 run-%: setup
-	$(DOCKER) run $(DOCKER_RUN_ARGS) --rm -ti ${CONTAINER_REGISTRY}/dbld-$* bash -c "$(RUN_COMMAND)"
+	$(DOCKER) run $(DOCKER_RUN_ARGS) --rm -ti -w $${WORKDIR:-/source} ${CONTAINER_REGISTRY}/dbld-$* bash -c "$(RUN_COMMAND)"
 
 shell: shell-$(DEFAULT_IMAGE)
 shell-%: setup
