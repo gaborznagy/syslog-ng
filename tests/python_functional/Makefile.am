@@ -21,7 +21,8 @@ pytest-check:
 	@${PYTHON} -m pytest -o log_cli=$(PYTEST_VERBOSE) $(top_srcdir)/tests/python_functional/functional_tests/$(PYTEST_SUBDIR) --installdir=${prefix} --showlocals --verbosity=3 --show-capture=no
 
 pytest-linters:
-	@find $(top_srcdir)/tests/python_functional/ -name "*.py" \
+	@cd $(top_srcdir) && \
+	find $(top_srcdir)/tests/python_functional/ -name "*.py" \
 		-not -path "*reports*" \
 		-not -path "*tox*" \
 		-print0 | xargs -0 \
