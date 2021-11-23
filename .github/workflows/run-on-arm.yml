@@ -54,7 +54,13 @@ jobs:
               libxml2-utils \
               doxygen \
               libsnmp-dev \
-              autopoint
+              autopoint \
+              git \
+              cmake \
+              automake \
+              autoconf \
+              wget \
+              libpaho-mqtt-dev
           run: |
             python3 -m pip install --user --cache-dir=$PWD/pip-cache -r requirements.txt
             python3 -m pip list
