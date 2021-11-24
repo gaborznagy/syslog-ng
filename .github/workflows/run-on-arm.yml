@@ -3,6 +3,7 @@ name: arm-docker
 on:
   pull_request:
   push:
+  workflow_dispatch:
   schedule:
     - cron: '00 21 * * *'
 
