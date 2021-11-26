@@ -256,8 +256,6 @@ jobs:
 
   commits-check:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/syslog-ng/dbld-devshell:latest
 
     steps:
       - name: Checkout syslog-ng source
