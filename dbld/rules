@@ -16,7 +16,7 @@ BUILDER_IMAGES=		\
 	tarball
 
 IMAGES=${BUILDER_IMAGES} devshell
-DEFAULT_IMAGE ?= ubuntu-bionic
+DEFAULT_IMAGE ?= devshell
 TARBALL_IMAGE ?= tarball
 DEFAULT_DEB_IMAGE=ubuntu-bionic
 DEFAULT_RPM_IMAGE=centos-7
