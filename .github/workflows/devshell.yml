@@ -196,12 +196,12 @@ jobs:
         run: dbld/rules cache-image-devshell
 
       - name: Bootstrap
-        run: dbld/rules bootstrap-devshell
+        run: dbld/rules bootstrap
 
       - name: Style check (C)
         id: c-style-check
         run: |
-          dbld/rules run-devshell RUN_COMMAND="scripts/style-checker.sh format"
+          dbld/rules run RUN_COMMAND="scripts/style-checker.sh format"
           git diff --exit-code > c-style-problems.diff || \
             (cat c-style-problems.diff && git reset --hard HEAD && exit 1)
 
@@ -209,15 +209,15 @@ jobs:
         if: always()
         continue-on-error: true # Fix errors from pylint
         run: |
-          dbld/rules make-devshell MAKE_TARGET="python-pep8" &&
-          dbld/rules make-devshell MAKE_TARGET="python-pylint" ||
+          dbld/rules make MAKE_TARGET="python-pep8" &&
+          dbld/rules make MAKE_TARGET="python-pylint" ||
           (git reset --hard HEAD && exit 1)
 
       - name: Style check (Light)
         id: light-style-check
         if: always()
         run: |
-          dbld/rules make-devshell MAKE_TARGET="pytest-linters" ||
+          dbld/rules make MAKE_TARGET="pytest-linters" ||
           (git diff > ../light-style-problems.diff ; git reset --hard HEAD && exit 1)
 
       - name: "Artifact: c-style-problems"
