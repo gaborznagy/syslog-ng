@@ -185,40 +185,40 @@ jobs:
 
   style-check:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/syslog-ng/dbld-devshell:latest
 
     steps:
       - name: Checkout syslog-ng source
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: Prepare
-        run: |
-          ./autogen.sh
-          mkdir build && cd build
-          ../configure
+      - name: Prepare devshell image
+        run: dbld/rules cache-image-devshell
+
+      - name: Bootstrap
+        run: dbld/rules bootstrap-devshell
 
       - name: Style check (C)
         id: c-style-check
         run: |
-          scripts/style-checker.sh format
+          dbld/rules run-devshell RUN_COMMAND="scripts/style-checker.sh format"
           git diff --exit-code > c-style-problems.diff || \
             (cat c-style-problems.diff && git reset --hard HEAD && exit 1)
 
       - name: Style check (pylib)
         if: always()
-        working-directory: ./build
         continue-on-error: true # Fix errors from pylint
         run: |
-          make python-pep8 && make python-pylint || (git reset --hard HEAD && exit 1)
+          dbld/rules make-devshell MAKE_TARGET="python-pep8" &&
+          dbld/rules make-devshell MAKE_TARGET="python-pylint" ||
+          (git reset --hard HEAD && exit 1)
 
       - name: Style check (Light)
         id: light-style-check
         if: always()
-        working-directory: ./build
         run: |
-          make pytest-linters || \
-            (git diff > ../light-style-problems.diff ; git reset --hard HEAD && exit 1)
+          dbld/rules make-devshell MAKE_TARGET="pytest-linters" ||
+          (git diff > ../light-style-problems.diff ; git reset --hard HEAD && exit 1)
 
       - name: "Artifact: c-style-problems"
         uses: actions/upload-artifact@v2
