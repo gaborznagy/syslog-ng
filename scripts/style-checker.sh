@@ -68,9 +68,19 @@ function print_help
     echo "  EXCLUDE_DIR  Path for the build directory (excluded from style-check)  (default: '')"
 }
 
+function check_astyle_exists
+{
+  if ! which astyle > /dev/null; then
+    echo "astyle is not found on \$PATH"
+    exit 1
+  fi
+
+}
+
 function run_checker
 {
     setup_root_dir
+    check_astyle_exists
     if [ "$action" == "check" ]; then
         echo "Checking C source files"
         astyle_c_check
