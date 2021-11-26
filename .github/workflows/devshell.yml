@@ -201,7 +201,7 @@ jobs:
       - name: Style check (C)
         id: c-style-check
         run: |
-          dbld/rules run RUN_COMMAND="scripts/style-checker.sh format"
+          dbld/rules make MAKE_TARGET="style-format"
           git diff --exit-code > c-style-problems.diff || \
             (cat c-style-problems.diff && git reset --hard HEAD && exit 1)
 
