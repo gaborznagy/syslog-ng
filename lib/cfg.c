@@ -55,7 +55,7 @@
 
 struct _PersistConfig
 {
-  GHashTable *keys;
+  GHashTable* keys;
 };
 
 typedef struct _PersistConfigEntry
