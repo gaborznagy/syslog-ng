@@ -145,8 +145,6 @@ jobs:
 
   distcheck:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/syslog-ng/dbld-devshell:latest
 
     steps:
       - name: Checkout syslog-ng source
@@ -173,15 +171,18 @@ jobs:
           gh_export DISTCHECK_CONFIGURE_FLAGS
 
       - name: autogen.sh
-        run: ./autogen.sh
+        run: dbld/rules run RUN_COMMAND="./autogen.sh"
 
       - name: configure
-        run: ./configure --disable-all-modules --enable-manpages
+        run: dbld/rules run RUN_COMMAND="./configure --disable-all-modules --enable-manpages"
 
       - name: distcheck
         run: |
-          . tests/build-log-cflags-propagation.sh
-          exec_prop_check "make distcheck -j 3 V=1"
+          RUN_COMMAND='. tests/build-log-cflags-propagation.sh
+            exec_prop_check "make distcheck -j 3 V=1"'
+          dbld/rules run \
+            DOCKER_RUN_ARGS_ADD="-e DISTCHECK_CONFIGURE_FLAGS:${DISTCHECK_CONFIGURE_FLAGS}" \
+            RUN_COMMAND="${RUN_COMMAND}"
 
   style-check:
     runs-on: ubuntu-latest
