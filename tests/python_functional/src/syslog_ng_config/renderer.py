@@ -47,7 +47,7 @@ def render_global_options(global_options):
 def render_positional_options(positional_parameters):
     config_snippet = ""
     for parameter in positional_parameters:
-        config_snippet += "        {}\n".format(str(parameter))
+        config_snippet += "        '{}'\n".format(str(parameter))
     return config_snippet
 
 
