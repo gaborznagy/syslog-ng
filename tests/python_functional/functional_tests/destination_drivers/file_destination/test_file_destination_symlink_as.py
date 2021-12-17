@@ -23,7 +23,7 @@
 
 def test_file_destination_symlink_as(config, syslog_ng):
     generator_source = config.create_example_msg_generator_source(num=1, template=config.stringify("test message text"))
-    file_destination = config.create_file_destination(file_name=r'output.log', symlink_as=config.stringify('/tmp/latest.log'))
+    file_destination = config.create_file_destination(file_name=r'output-${ISODATE}.log', symlink_as=config.stringify('/tmp/latest.log'))
     config.create_logpath(statements=[generator_source, file_destination])
 
     syslog_ng.start(config)
