@@ -1,6 +1,6 @@
 Name: syslog-ng
 Version: 3.36.1
-Release: 2%{?dist}
+Release: 1%{?dist}
 Summary: Next-generation syslog server
 
 Group: System Environment/Daemons
@@ -15,7 +15,6 @@ Source3: syslog-ng.service
 Source4: syslog-ng.logrotate7
 
 
-%bcond_without sql
 %bcond_without mongodb
 %bcond_without systemd
 %bcond_without redis
@@ -26,6 +25,11 @@ Source4: syslog-ng.logrotate7
 %bcond_without afsnmp
 %bcond_without mqtt
 
+%if 0%{?rhel} == 9
+%bcond_with sql
+%else
+%bcond_without sql
+%endif
 
 %if 0%{?rhel} == 8
 %global		python_devel python39-devel
@@ -53,11 +57,15 @@ BuildRequires: libtool
 BuildRequires: bison
 BuildRequires: flex
 BuildRequires: libxslt
-BuildRequires: glib2-devel
+# Copr always uses the latest RHEL release to build syslog-ng
+# starting syslog-ng might fail on older RHEL releases
+# change this if you build on an older RHEL version
+# can be as low as 2.32
+BuildRequires: glib2-devel >= 2.54
+Requires: glib2 >= 2.54
 BuildRequires: ivykis-devel
 BuildRequires: json-c-devel
 BuildRequires: libcap-devel
-BuildRequires: libdbi-devel
 BuildRequires: libnet-devel
 BuildRequires: openssl-devel
 BuildRequires: pcre-devel
@@ -66,6 +74,10 @@ BuildRequires: libesmtp-devel
 BuildRequires: libcurl-devel
 
 BuildRequires: %{python_devel}
+
+%if %{with sql}
+BuildRequires: libdbi-devel
+%endif
 
 %if %{with amqp}
 BuildRequires: librabbitmq-devel
@@ -86,9 +98,9 @@ BuildRequires: hiredis-devel
 %if %{with systemd}
 BuildRequires: systemd-units
 BuildRequires: systemd-devel
-Requires(post): systemd-units
-Requires(preun): systemd-units
-Requires(postun): systemd-units
+# Requires(post): systemd-units
+# Requires(preun): systemd-units
+# Requires(postun): systemd-units
 %endif
 
 %if %{with mongodb}
@@ -97,7 +109,11 @@ BuildRequires: cyrus-sasl-devel
 %endif
 
 %if %{with java}
+%if 0%{?rhel} == 9
+BuildRequires: java-1.8.0-openjdk-devel
+%else
 BuildRequires: java-devel
+%endif
 %endif
 
 %if %{with kafka}
@@ -357,6 +373,9 @@ make DESTDIR=%{buildroot} install
 %{__install} -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/logrotate.d/syslog
 %endif
 %if 0%{?fedora} >= 28
+%{__install} -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/logrotate.d/syslog-ng
+%endif
+%if 0%{?rhel} == 9
 %{__install} -p -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/logrotate.d/syslog-ng
 %endif
 
@@ -621,6 +640,12 @@ fi
 
 
 %changelog
+* Tue May 24 2022 Peter Czanik <peter@czanik.hu> - 3.36.1-2
+- add RHEL 9 support with disabled SQL support
+- do not depend on systemd-units (smaller footprint)
+- depend on recent glib2 to make sure that installation fails if
+  unavailable (helps with Copr packages on ancient RHEL7)
+
 * Mon Feb 28 2022 github-actions <github-actions@github.com> - 3.36.1-1
 - updated to 3.36.1
 
