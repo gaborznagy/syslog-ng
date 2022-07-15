@@ -31,7 +31,6 @@ lib_tests_TESTS		= \
 	lib/tests/test_ringbuffer	   \
 	lib/tests/test_hostid		   \
 	lib/tests/test_zone		   \
-	lib/tests/test_pathutils	   \
 	lib/tests/test_logwriter	\
 	lib/tests/test_thread_wakeup
 
