@@ -5,7 +5,7 @@
 # Adapted from https://invent.kde.org/frameworks/extra-cmake-modules/-/blob/master/find-modules/FindGperf.cmake?ref_type=heads
 #
 
-find_program(Gperf_EXECUTABLE NAMES gperf)
+find_program(Gperf_EXECUTABLE NAMES gperf REQUIRED)
 
 if (Gperf_EXECUTABLE)
     execute_process(COMMAND ${Gperf_EXECUTABLE} -v
@@ -37,6 +37,9 @@ if (Gperf_FOUND)
             IMPORTED_LOCATION "${Gperf_EXECUTABLE}"
         )
     endif()
+else()
+    # REQUIRED option for find_program only supported from cmake 3.18
+    message(FATAL_ERROR "Missing gperf program.")
 endif()
 
 function(gperf_generate input_file output_file _target_or_sources_var)
